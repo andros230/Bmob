@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
         //查询数据
         BmobQuery<Person> query = new BmobQuery<>();
+        //增加查询条件
+        query.addWhereEqualTo("name","lucky2");
         query.findObjects(MainActivity.this, new FindListener<Person>() {
             @Override
             public void onSuccess(List<Person> list) {
