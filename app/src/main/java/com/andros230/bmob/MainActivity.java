@@ -1,58 +1,88 @@
 package com.andros230.bmob;
 
-import android.support.v7.app.AppCompatActivity;
+import org.json.JSONObject;
+
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobRealTimeData;
+import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.ValueEventListener;
+
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
 import java.util.List;
 
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SaveListener;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
+    BmobRealTimeData data = new BmobRealTimeData();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //初始化
         Bmob.initialize(this, "5b9353d27ae18dc5aafb5bf57b85a06b");
-        //增加数据
-        final Person person = new Person();
+        realTimeData();
+    }
+
+    //保存数据
+    public void save() {
+        Person person = new Person();
         person.setName("lucky");
         person.setAddress("北京");
         person.save(this, new SaveListener() {
             @Override
             public void onSuccess() {
-                Log.d("---", "onSuccess");
+                Log.d("保存数据---", "onSuccess");
             }
 
             @Override
             public void onFailure(int i, String s) {
-                Log.e("---", "onFailure");
+                Log.e("保存数据---", "onFailure");
             }
         });
+    }
 
-        //查询数据
+    //查询数据
+    public void query() {
         BmobQuery<Person> query = new BmobQuery<>();
         //增加查询条件
-        query.addWhereEqualTo("name","lucky2");
+        query.addWhereEqualTo("name", "lucky");
         query.findObjects(MainActivity.this, new FindListener<Person>() {
             @Override
             public void onSuccess(List<Person> list) {
                 for (Person person1 : list) {
-                    Log.d("查询---", person1.getName() + person1.getAddress());
+                    Log.d("查询数据---", person1.getName() + person1.getAddress());
                 }
             }
 
             @Override
             public void onError(int i, String s) {
-                Log.e("r---", "查询数据onError");
+                Log.e("查询数据---", "onError");
             }
         });
-
-
     }
+
+    //实时数据
+    public void realTimeData() {
+        data.start(this, new ValueEventListener() {
+            @Override
+            public void onDataChange(JSONObject arg0) {
+                // TODO Auto-generated method stub\
+                JSONObject data = arg0.optJSONObject("data");
+                Log.d("name---", data.optString("name"));
+                Log.d("content---", data.optString("content"));
+            }
+
+            @Override
+            public void onConnectCompleted() {
+                // TODO Auto-generated method stub
+                if (data.isConnected()) {
+                    data.subTableUpdate("Chat");
+                }
+            }
+        });
+    }
+
 }
