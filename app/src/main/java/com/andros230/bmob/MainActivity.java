@@ -3,6 +3,7 @@ package com.andros230.bmob;
 import org.json.JSONObject;
 
 import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobRealTimeData;
 import cn.bmob.v3.listener.DeleteListener;
@@ -15,6 +16,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity {
@@ -25,7 +27,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Bmob.initialize(this, "5b9353d27ae18dc5aafb5bf57b85a06b");
-        delete();
+        insertBatch();
     }
 
     //保存数据
@@ -119,4 +121,29 @@ public class MainActivity extends Activity {
         });
     }
 
+
+    //批量保存数据
+    public void insertBatch() {
+        List<BmobObject> persons = new ArrayList<>();
+        Person person1 = new Person();
+        person1.setName("aa");
+        person1.setAddress("上海");
+        Person person2 = new Person();
+        person2.setName("bb");
+        person2.setAddress("北京");
+        persons.add(person1);
+        persons.add(person2);
+
+        new BmobObject().insertBatch(this, persons, new SaveListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("批量保存数据成功---", "onSuccess");
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+                Log.e("批量保存数据失败---", "onFailure");
+            }
+        });
+    }
 }
