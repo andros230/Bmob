@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Bmob.initialize(this, "5b9353d27ae18dc5aafb5bf57b85a06b");
-        insertBatch();
+        updateBatch();
     }
 
     //保存数据
@@ -143,6 +143,32 @@ public class MainActivity extends Activity {
             @Override
             public void onFailure(int i, String s) {
                 Log.e("批量保存数据失败---", "onFailure");
+            }
+        });
+    }
+
+
+    //批量修改数据
+    public void updateBatch() {
+        List<BmobObject> persons = new ArrayList<>();
+        Person person1 = new Person();
+        person1.setObjectId("49377b7238");
+        person1.setAddress("广州");
+        Person person2 = new Person();
+        person2.setObjectId("72d5c87794");
+        person2.setAddress("成都");
+        persons.add(person1);
+        persons.add(person2);
+
+        new BmobObject().updateBatch(this, persons, new UpdateListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("批量修改数据成功---", "onSuccess");
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+                Log.e("批量修改数据失败", "onFailure");
             }
         });
     }
