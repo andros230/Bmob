@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Bmob.initialize(this, "5b9353d27ae18dc5aafb5bf57b85a06b");
-        updateBatch();
+        deleteBatch();
     }
 
     //保存数据
@@ -172,4 +172,28 @@ public class MainActivity extends Activity {
             }
         });
     }
+
+    //批量删除数据
+    public void deleteBatch() {
+        List<BmobObject> persons = new ArrayList<>();
+        Person person1 = new Person();
+        person1.setObjectId("49377b7238");
+        Person person2 = new Person();
+        person2.setObjectId("72d5c87794");
+        persons.add(person1);
+        persons.add(person2);
+
+        new BmobObject().deleteBatch(this, persons, new DeleteListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("批量删除数据成功---", "onSuccess");
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+                Log.e("批量删除数据失败---", "onFailure");
+            }
+        });
+    }
+
 }
