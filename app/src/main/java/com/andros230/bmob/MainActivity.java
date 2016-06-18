@@ -7,6 +7,7 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobRealTimeData;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.ValueEventListener;
 
 import android.app.Activity;
@@ -23,7 +24,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Bmob.initialize(this, "5b9353d27ae18dc5aafb5bf57b85a06b");
-        realTimeData();
+        update();
     }
 
     //保存数据
@@ -63,6 +64,26 @@ public class MainActivity extends Activity {
             }
         });
     }
+
+    public void update(){
+        final Person person = new Person();
+        person.setAddress("北京");
+        person.update(this, "snNHbbbe", new UpdateListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("更新成功---","onSuccess");
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+                Log.e("更新失败---","onFailure");
+            }
+        });
+    }
+
+
+
+
 
     //实时数据
     public void realTimeData() {
